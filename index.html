@@ -362,14 +362,14 @@
 <li>appSecret: 這邊填入應用程式密鑰</li>
 <li>pageAccessToken: 粉絲專頁存取權杖</li>
 <li>validationToken: 自己可以任意輸入，但要需要記住，等等下面會用到</li>
-<li>serverURL: 輸入<a href="https://**專案名稱**–**帳號名稱**.c9users.io" target="_blank" rel="noopener">https://**專案名稱**–**帳號名稱**.c9users.io</a></li>
+<li>serverURL: 輸入https:// <strong>專案名稱</strong> –<strong>帳號名稱</strong> .c9users.io</li>
 </ul>
 <p>完成後存檔並在下面Terminal輸入下列指令來啟動Server</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ node app.js</span><br></pre></td></tr></table></figure>
 <p>成功時會看到 <strong>「Node app is running on port 8080」</strong></p>
 <h2 id="設定Webhooks"><a href="#設定Webhooks" class="headerlink" title="設定Webhooks"></a>設定Webhooks</h2><p>回到FB Developer的頁面，點擊右邊的 <strong>「設定Webhooks」</strong></p>
 <p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/7.png" alt=""></p>
-<p>在回呼網址輸入<a href="https://**專案名稱**–**帳號名稱**.c9users.io/webhook" target="_blank" rel="noopener">https://**專案名稱**–**帳號名稱**.c9users.io/webhook</a><br>驗證權杖這邊輸入上面json裡 <strong>validationToken</strong> 的值<br>下面的訂閱欄位依自己需求勾選</p>
+<p>在回呼網址輸入https:// <strong>專案名稱</strong> –<strong>帳號名稱</strong> .c9users.io/webhook<br>驗證權杖這邊輸入上面json裡 <strong>validationToken</strong> 的值<br>下面的訂閱欄位依自己需求勾選</p>
 <p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/8.png" alt=""></p>
 <p>儲存完後就可以選訂閱的粉絲團</p>
 <p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/9.png" alt=""></p>
