@@ -94,20 +94,23 @@
 
 
 
-<meta name="description" content="Spark環境快速安裝先介紹一下我佈署的環境：  Ubuntu 16.04 LTS Java 8 Scala 2.12.1 Spark 2.1.0 Hadoop 2.7  佈建Spark環境之前，需要先裝Java、Scala 下面會一步一步教如何安裝  教學最後我也寫了一個Script來幫助自動安裝  Java環境安裝1234$ add-apt-repository ppa:webupd8team">
+<meta name="description" content="Standalone Mode的佈建 二上一篇會發現我需要一一到Master與各個Slave中進行開啟的動作今天電腦數量少還沒問題，但萬一數量多就不方便了所以這篇要教的是如何只需啟動Master就能把Standalone的環境一次佈建好其實概念很簡單，就是Master會自己透過SSH一一到各個Slave中進行啟動的動作 環境介紹這邊一樣，有三台電腦分別為：    Hostname Username">
 <meta name="keywords" content="spark">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spark環境快速安裝">
-<meta property="og:url" content="http://yoursite.com/2017/12/25/Spark環境快速安裝/index.html">
+<meta property="og:title" content="Standalone Mode的佈建 二">
+<meta property="og:url" content="http://yoursite.com/2017/12/25/Standalone-Mode的佈建-二/index.html">
 <meta property="og:site_name" content="Howard的學習之路">
-<meta property="og:description" content="Spark環境快速安裝先介紹一下我佈署的環境：  Ubuntu 16.04 LTS Java 8 Scala 2.12.1 Spark 2.1.0 Hadoop 2.7  佈建Spark環境之前，需要先裝Java、Scala 下面會一步一步教如何安裝  教學最後我也寫了一個Script來幫助自動安裝  Java環境安裝1234$ add-apt-repository ppa:webupd8team">
+<meta property="og:description" content="Standalone Mode的佈建 二上一篇會發現我需要一一到Master與各個Slave中進行開啟的動作今天電腦數量少還沒問題，但萬一數量多就不方便了所以這篇要教的是如何只需啟動Master就能把Standalone的環境一次佈建好其實概念很簡單，就是Master會自己透過SSH一一到各個Slave中進行啟動的動作 環境介紹這邊一樣，有三台電腦分別為：    Hostname Username">
 <meta property="og:locale" content="en">
-<meta property="og:image" content="http://yoursite.com/2017/12/25/Spark環境快速安裝/Spark-Shell.png">
-<meta property="og:updated_time" content="2017-12-25T12:54:45.198Z">
+<meta property="og:image" content="http://yoursite.com/2017/12/25/Standalone-Mode的佈建-二/Hosts.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/25/Standalone-Mode的佈建-二/PingTest.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/25/Standalone-Mode的佈建-二/SlavesConf.png">
+<meta property="og:image" content="http://yoursite.com/2017/12/25/Standalone-Mode的佈建-二/StartStandalone.png">
+<meta property="og:updated_time" content="2017-12-25T13:15:09.562Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spark環境快速安裝">
-<meta name="twitter:description" content="Spark環境快速安裝先介紹一下我佈署的環境：  Ubuntu 16.04 LTS Java 8 Scala 2.12.1 Spark 2.1.0 Hadoop 2.7  佈建Spark環境之前，需要先裝Java、Scala 下面會一步一步教如何安裝  教學最後我也寫了一個Script來幫助自動安裝  Java環境安裝1234$ add-apt-repository ppa:webupd8team">
-<meta name="twitter:image" content="http://yoursite.com/2017/12/25/Spark環境快速安裝/Spark-Shell.png">
+<meta name="twitter:title" content="Standalone Mode的佈建 二">
+<meta name="twitter:description" content="Standalone Mode的佈建 二上一篇會發現我需要一一到Master與各個Slave中進行開啟的動作今天電腦數量少還沒問題，但萬一數量多就不方便了所以這篇要教的是如何只需啟動Master就能把Standalone的環境一次佈建好其實概念很簡單，就是Master會自己透過SSH一一到各個Slave中進行啟動的動作 環境介紹這邊一樣，有三台電腦分別為：    Hostname Username">
+<meta name="twitter:image" content="http://yoursite.com/2017/12/25/Standalone-Mode的佈建-二/Hosts.png">
 
 
 
@@ -136,13 +139,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/12/25/Spark環境快速安裝/"/>
+  <link rel="canonical" href="http://yoursite.com/2017/12/25/Standalone-Mode的佈建-二/"/>
 
 
 
 
 
-  <title>Spark環境快速安裝 | Howard的學習之路</title>
+  <title>Standalone Mode的佈建 二 | Howard的學習之路</title>
   
 
 
@@ -275,7 +278,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/25/Spark環境快速安裝/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/25/Standalone-Mode的佈建-二/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Howard Chang">
@@ -292,7 +295,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Spark環境快速安裝</h1>
+          <h1 class="post-title" itemprop="name headline">Standalone Mode的佈建 二</h1>
         
 
         <div class="post-meta">
@@ -304,7 +307,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-25T19:52:23+08:00">
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-25T21:12:51+08:00">
                 2017-12-25
               </time>
             
@@ -342,41 +345,69 @@
       
 
       
-        <h1 id="Spark環境快速安裝"><a href="#Spark環境快速安裝" class="headerlink" title="Spark環境快速安裝"></a>Spark環境快速安裝</h1><p>先介紹一下我佈署的環境：</p>
-<ul>
-<li>Ubuntu 16.04 LTS</li>
-<li>Java 8</li>
-<li>Scala 2.12.1</li>
-<li>Spark 2.1.0</li>
-<li>Hadoop 2.7</li>
-</ul>
-<p>佈建Spark環境之前，需要先裝Java、Scala</p>
-<p>下面會一步一步教如何安裝</p>
+        <h1 id="Standalone-Mode的佈建-二"><a href="#Standalone-Mode的佈建-二" class="headerlink" title="Standalone Mode的佈建 二"></a>Standalone Mode的佈建 二</h1><p>上一篇會發現我需要一一到Master與各個Slave中進行開啟的動作<br>今天電腦數量少還沒問題，但萬一數量多就不方便了<br>所以這篇要教的是如何只需啟動Master就能把Standalone的環境一次佈建好<br>其實概念很簡單，就是Master會自己透過SSH一一到各個Slave中進行啟動的動作</p>
+<h2 id="環境介紹"><a href="#環境介紹" class="headerlink" title="環境介紹"></a>環境介紹</h2><p>這邊一樣，有三台電腦分別為：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Hostname</th>
+<th style="text-align:center">Username</th>
+<th style="text-align:center">IP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Master</td>
+<td style="text-align:center">spark</td>
+<td style="text-align:center">192.168.2.101</td>
+</tr>
+<tr>
+<td style="text-align:center">Slave1</td>
+<td style="text-align:center">spark</td>
+<td style="text-align:center">192.168.2.102</td>
+</tr>
+<tr>
+<td style="text-align:center">Slave2</td>
+<td style="text-align:center">spark</td>
+<td style="text-align:center">192.168.2.103</td>
+</tr>
+</tbody>
+</table>
+<p>基本上Username都要取一樣以及Spark放的路徑也要一樣<br>目標一樣是在Slave1跟Slave2上建立起Worker Node</p>
+<h2 id="環境設定"><a href="#環境設定" class="headerlink" title="環境設定"></a>環境設定</h2><h4 id="Hostname設定"><a href="#Hostname設定" class="headerlink" title="Hostname設定"></a>Hostname設定</h4><p>在Master與所有Slave的<code>/etc/hosts</code>加入各Hostname與IP對應，如下</p>
+<p><img src="/2017/12/25/Standalone-Mode的佈建-二/Hosts.png" alt=""></p>
+<p>要知道是否成功，可以在Master直接ping測試，如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ping Slave1</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>教學最後我也寫了一個Script來幫助自動安裝</p>
+<p>ping Slave1就等於ping 192.168.2.102</p>
 </blockquote>
-<h2 id="Java環境安裝"><a href="#Java環境安裝" class="headerlink" title="Java環境安裝"></a>Java環境安裝</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ add-apt-repository ppa:webupd8team/java</span><br><span class="line">$ apt-get update</span><br><span class="line">$ apt-get install -y oracle-java8-installer</span><br><span class="line">$ apt-get install -y oracle-java8-set-default</span><br></pre></td></tr></table></figure>
-<h2 id="Scala環境安裝"><a href="#Scala環境安裝" class="headerlink" title="Scala環境安裝"></a>Scala環境安裝</h2><p>因為我想裝在<code>HOME</code>目錄，所以cd到<code>HOME</code>目錄，這邊可以依照自行決定下載路徑</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~</span><br><span class="line">$ wget http://downloads.lightbend.com/scala/2.12.1/scala-2.12.1.tgz</span><br><span class="line">$ tar -xzvf scala-2.12.1.tgz</span><br></pre></td></tr></table></figure>
-<h2 id="Spark-Hadoop環境安裝"><a href="#Spark-Hadoop環境安裝" class="headerlink" title="Spark + Hadoop環境安裝"></a>Spark + Hadoop環境安裝</h2><p>基本上可以到官方網站<a href="http://spark.apache.org/downloads.html" target="_blank" rel="noopener">http://spark.apache.org/downloads.html</a></p>
-<p>選擇你要的版本，這邊我是選spark-2.1.0-bin-hadoop2.7來做下載</p>
-<p>我還是將它放到<code>HOME</code>目錄底下</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~</span><br><span class="line">$ wget http://d3kbcqa49mib13.cloudfront.net/spark-2.1.0-bin-hadoop2.7.tgz</span><br><span class="line">$ tar -xzvf spark-2.1.0-bin-hadoop2.7.tgz</span><br></pre></td></tr></table></figure>
-<h2 id="環境變數"><a href="#環境變數" class="headerlink" title="環境變數"></a>環境變數</h2><p>到這裡該下載的都完成了，再來就是設定環境變數</p>
-<p>主要是編輯<code>~/.bashrc</code>這個檔案，在裡面新增下列指令</p>
-<p>這邊要注意的一點是，<code>SPARK_HOME</code>與<code>SCALA_HOME</code>這邊是我剛剛下載的路徑，所以請按照自己環境設定</p>
-<p>而<code>JAVA_HOME</code>一般來講是不用動的</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">export SPARK_HOME=~/spark-2.1.0-bin-hadoop2.7</span><br><span class="line">export SCALA_HOME=~/scala-2.12.1</span><br><span class="line">export JAVA_HOME=/usr/lib/jvm/java-8-oracle</span><br><span class="line">export PATH=$SCALA_HOME/bin:$SPARK_HOME/bin:$JAVA_HOME/bin:$PATH</span><br></pre></td></tr></table></figure>
-<p>加入上列4條環境變數後，就可執行下面指令來生效</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ source ~/.bashrc</span><br></pre></td></tr></table></figure>
-<h2 id="執行Spark"><a href="#執行Spark" class="headerlink" title="執行Spark"></a>執行Spark</h2><p>最後一步就是執行Spark看看是否成功</p>
-<p>到Spark目錄下的<code>/bin</code>執行下面指令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ spark-shell</span><br></pre></td></tr></table></figure>
-<p>看到下面結果就表示成功囉<br><img src="/2017/12/25/Spark環境快速安裝/Spark-Shell.png" alt=""></p>
-<h2 id="自動安裝"><a href="#自動安裝" class="headerlink" title="自動安裝"></a>自動安裝</h2><p>在新的環境直接跑下面指令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://raw.githubusercontent.com/aswergbh888/Spark/master/Install/SparkInstaller.sh -O - | sh</span><br></pre></td></tr></table></figure>
-<p>Spark會安裝在<code>HOME</code>目錄，所以要執行spark-shell就輸入下面指令</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ~/spark-2.1.0-bin-hadoop2.7/bin/spark-shell</span><br></pre></td></tr></table></figure>
+<p><img src="/2017/12/25/Standalone-Mode的佈建-二/PingTest.png" alt=""></p>
+<h4 id="SSH免密碼登入設定"><a href="#SSH免密碼登入設定" class="headerlink" title="SSH免密碼登入設定"></a>SSH免密碼登入設定</h4><p>先安裝SSH</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ apt-get install openssh-server</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>一般要SSH連線都需要密碼，但其實可以透過建立起SSH public/private keys來進行免密碼登入<br>假設我想在A電腦免密碼登入B電腦，就先在A電腦產生public/private keys<br>並將A電腦的public key放到B電腦的~/.ssh/authorized_keys裡<br>A電腦就能不需要密碼直接登入B電腦了</p>
+</blockquote>
+<p>所以我們要做的是在Master產生SSH public/private keys<br>並透過ssh-copy-id指令將Master的public key複製到各個Slave的</p>
+<p><code>~/.ssh/authorized_keys</code>檔案裡，做法如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -t rsa</span><br><span class="line">$ ssh-copy-id -i ~/.ssh/id_rsa.pub spark@Slave1</span><br><span class="line">$ ssh-copy-id -i ~/.ssh/id_rsa.pub spark@Slave2</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>在下ssh-keygen -t rsa指令時，它會要求一堆資訊直接按Enter到底就行了</p>
+</blockquote>
+<p>在Master輸入完上面指令後，來測試一下是否免密碼登入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh spark@Slave1</span><br></pre></td></tr></table></figure>
+<h4 id="配置Worker-Node"><a href="#配置Worker-Node" class="headerlink" title="配置Worker Node"></a>配置Worker Node</h4><p>來到Master下，先到Spark目錄下的<code>/conf</code></p>
+<p>複製<code>slaves.template</code>一份為<code>slaves</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cp slaves.template slaves</span><br></pre></td></tr></table></figure>
+<p>修改slaves檔案，把要當作Worker Node的Hostname加進去，如下</p>
+<p><img src="/2017/12/25/Standalone-Mode的佈建-二/SlavesConf.png" alt=""></p>
+<p>把這份檔案複製給各個Slave的Spark目錄下<code>/conf</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ scp -r slaves spark@Slave1:~/spark-2.1.0-bin-hadoop2.7/conf</span><br><span class="line">$ scp -r slaves spark@Slave2:~/spark-2.1.0-bin-hadoop2.7/conf</span><br></pre></td></tr></table></figure>
+<h2 id="執行Standalone"><a href="#執行Standalone" class="headerlink" title="執行Standalone"></a>執行Standalone</h2><p>最後，直接在Master的Spark目錄<code>/sbin</code>下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./start-all.sh</span><br></pre></td></tr></table></figure>
+<p>如果要結束就輸入下面指令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./stop-all.sh</span><br></pre></td></tr></table></figure>
+<p><img src="/2017/12/25/Standalone-Mode的佈建-二/StartStandalone.png" alt=""></p>
+<p>一樣到瀏覽器Master_IP:8080就會看到Slave1與Slave2已經當作Worker Node加進來了</p>
 
       
     </div>
@@ -407,15 +438,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2017/12/25/Standalone-Mode的佈建-一/" rel="next" title="Standalone Mode的佈建 一">
+                <i class="fa fa-chevron-left"></i> Standalone Mode的佈建 一
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/12/25/Standalone-Mode的佈建-一/" rel="prev" title="Standalone Mode的佈建 一">
-                Standalone Mode的佈建 一 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -553,7 +584,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Spark環境快速安裝"><span class="nav-number">1.</span> <span class="nav-text">Spark環境快速安裝</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java環境安裝"><span class="nav-number">1.1.</span> <span class="nav-text">Java環境安裝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scala環境安裝"><span class="nav-number">1.2.</span> <span class="nav-text">Scala環境安裝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spark-Hadoop環境安裝"><span class="nav-number">1.3.</span> <span class="nav-text">Spark + Hadoop環境安裝</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#環境變數"><span class="nav-number">1.4.</span> <span class="nav-text">環境變數</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#執行Spark"><span class="nav-number">1.5.</span> <span class="nav-text">執行Spark</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#自動安裝"><span class="nav-number">1.6.</span> <span class="nav-text">自動安裝</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Standalone-Mode的佈建-二"><span class="nav-number">1.</span> <span class="nav-text">Standalone Mode的佈建 二</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#環境介紹"><span class="nav-number">1.1.</span> <span class="nav-text">環境介紹</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#環境設定"><span class="nav-number">1.2.</span> <span class="nav-text">環境設定</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Hostname設定"><span class="nav-number">1.2.0.1.</span> <span class="nav-text">Hostname設定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#SSH免密碼登入設定"><span class="nav-number">1.2.0.2.</span> <span class="nav-text">SSH免密碼登入設定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置Worker-Node"><span class="nav-number">1.2.0.3.</span> <span class="nav-text">配置Worker Node</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#執行Standalone"><span class="nav-number">1.3.</span> <span class="nav-text">執行Standalone</span></a></li></ol></li></ol></div>
             
 
           </div>
