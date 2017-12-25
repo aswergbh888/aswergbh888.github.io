@@ -270,6 +270,175 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/25/緩衝區溢位原理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Howard Chang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howard的學習之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/25/緩衝區溢位原理/" itemprop="url">緩衝區溢位原理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-25T21:43:38+08:00">
+                2017-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="緩衝區溢位原理"><a href="#緩衝區溢位原理" class="headerlink" title="緩衝區溢位原理"></a>緩衝區溢位原理</h1><h2 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h2><p>指的是利用程式的漏洞，向緩衝衝區寫入使溢位的值，可用來達到以下目的：</p>
+<ul>
+<li>程序破壞</li>
+<li>控制程式流程</li>
+<li>取得系統的控制權</li>
+</ul>
+<p>以下將透過編寫簡單的程式，並輸入過長字串讓程序當掉，以了解緩衝區溢位的原理。</p>
+<h2 id="環境介紹"><a href="#環境介紹" class="headerlink" title="環境介紹"></a>環境介紹</h2><ul>
+<li>OS：Windows XP_x86 (SP3)</li>
+<li>IDE：VC++ 6.0</li>
+</ul>
+<h2 id="事前準備及利用緩衝區漏洞"><a href="#事前準備及利用緩衝區漏洞" class="headerlink" title="事前準備及利用緩衝區漏洞"></a>事前準備及利用緩衝區漏洞</h2><p>這裡以C寫一段存在緩衝區漏洞的程式</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">char</span> name[] = <span class="string">"HAO-WEI"</span>;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buffer[<span class="number">8</span>];</span><br><span class="line">    <span class="built_in">strcpy</span>(buffer, name);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s \n"</span>, buffer);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>這段程式是先宣告name變數資料型態為Char的陣列，並設值為”HAO-WEI”，<br>並在主程式中，宣告buffer變數一樣為Char的陣列的資料型態，設定與name變數相同長度，因為HAO-WEI後面還有一個’\0′<br>使用strcpy函數將name的字串複製給buffer，最後再輸出。</p>
+<p>![][1-1.jpg]</p>
+<p>以上是有存在緩衝區溢位的程式碼，這邊思考一下，如果name的長度比8更長，或是buffer長度比8小，讓他真的發生緩衝區溢位，那麼會發生什麼事呢？<br>這邊將name內容設為HAO-WEIHAO-WEI，長度為15，並編譯執行</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">char</span> name[] = <span class="string">"HAO-WEI"</span>;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">char</span> buffer[<span class="number">8</span>];</span><br><span class="line">    <span class="built_in">strcpy</span>(buffer, name);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s \n"</span>, buffer);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>![][1-1-b.jpg]</p>
+<p>程序雖然成功的輸出HAO-WEIHAO-WEI，但隨即就當掉了。<br>緩衝區不就只是滿了，為什麼會發生這樣的事情呢？</p>
+<h2 id="分析說明"><a href="#分析說明" class="headerlink" title="分析說明"></a>分析說明</h2><p>要解釋這個問題時，先講解程式在執行時Stack運作原理<br>程式在直行時會有一塊記憶體是存放Stack的部分<br>當進入副程式時，系統會給予這副程式一塊可用記憶體，稱為Stack Frame(如下圖)</p>
+<p>![][stack.jpg]</p>
+<p>其中epb跟esp都是暫存器的值</p>
+<ul>
+<li>epb表示Stack底端</li>
+<li>esp表示Stack頂端</li>
+</ul>
+<p>每一個Stack Frame都有屬於自己的esp跟ebp<br>所以只要把epb的值+4就可以拿到這個Function的變數2的值<br>epb的值+8也就可以拿到變數1的值<br>而最上面綠色那塊則是這Function可用的其他記憶體空間<br>另外也會把這個Function完成後<br>等等要執行下一個指令的位置寫到Return Address這裡<br>也會把呼叫這個Function的舊ebp保存起來<br>以供結束此Function能夠回復上一個Function的ebp<br>這樣Function一直不斷呼叫，記憶體不斷的往上疊，也不會亂掉，因為每個Function只需在意他自己的ebp跟esp</p>
+<p>這邊用OllyDbg來進行動態分析，以了解程式的組合語言以及執行時的Stack變化</p>
+<h3 id="進入FUNCTION前"><a href="#進入FUNCTION前" class="headerlink" title="進入FUNCTION前"></a>進入FUNCTION前</h3><p>我們先把程式停在進入Ｍain()這個Function前<br>另外也需特別注意下一個指令的位置00401699<br>結束完Main()時會繼續往這裡走，所以需要把這個位置寫到Stack中(等等下面圖片會看到)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00401694        CALL BufferOv.00401005　// 表示CALL Main()</span><br></pre></td></tr></table></figure>
+<p>![][1-1-c.png]</p>
+<p>以及他的Stack狀況</p>
+<p>![][1-1-d.png]</p>
+<p>可以知道目前esp為0012FF88</p>
+<h3 id="進入FUNCTION後"><a href="#進入FUNCTION後" class="headerlink" title="進入FUNCTION後"></a>進入FUNCTION後</h3><p>觀察一下Stack狀態<br>就可以發現目前的esp變為0012FF24<br>而ebp為0012FF80 其值為0012FFC0(上一個Function的ebp)<br>而0012FF84(ebp + 4) 其值為00401699(為Main()執行完要回去的位置，也稱Return Address)<br>而這個Main()所用記憶體也就是0012FF24 ~ 0012FF7C這些空間</p>
+<p>![][1-1-h.png]</p>
+<h3 id="執行STRCPY前"><a href="#執行STRCPY前" class="headerlink" title="執行STRCPY前"></a>執行STRCPY前</h3><p>我們來看一下Main()裡面寫到的strcpy這Function的C語言以及其對應組合語言的部分</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">strcpy</span>(buffer, name);</span><br></pre></td></tr></table></figure>
+<p>strcpy的API</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">char</span> * <span class="title">strcpy</span> <span class="params">( <span class="keyword">char</span> * destination, <span class="keyword">const</span> <span class="keyword">char</span> * source )</span></span>;</span><br></pre></td></tr></table></figure>
+<p>![][1-1-g.png]</p>
+<p>可以知道他把”HAO-WEI”這些字串拷貝到[ebp – 8]也就是0012FF78這個位置上</p>
+<h3 id="執行STRCPY後"><a href="#執行STRCPY後" class="headerlink" title="執行STRCPY後"></a>執行STRCPY後</h3><p>我們來看看0012FF78這個位置的值發生什麼變化</p>
+<p>![][1-1-i.png]</p>
+<p>已經被填入”HAO-WEI”的字串了，看起來沒什麼問題<br>那如果是填入過長字串如”HAO-WEIHAO-WEI”會怎樣呢？我們來看看</p>
+<p>![][1-1-j.png]</p>
+<p>結果發現0012FF84原本放Main()執行完要去的位置被覆寫掉了，變成00004945<br>意謂著等等結束Main()會跳到00004945位置繼續執行指令，而這個位置如果是空的，程式自然就會當掉，發生以下情形</p>
+<p>![][1-1-k.png]</p>
+<p>很明顯的圖片上出現的0x00004945就是這個意思</p>
+<h2 id="最後"><a href="#最後" class="headerlink" title="最後"></a>最後</h2><p>換個角度想，如果覆寫掉的這個位置是存在的，就樣是不是就能控制程式流程，隨心所欲的跳到想要的位置呢？</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/25/Spark與Flume之環境建置/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -970,7 +1139,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -983,7 +1152,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-count">2</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
