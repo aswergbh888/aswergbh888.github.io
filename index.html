@@ -270,6 +270,167 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/25/Spark與Flume之環境建置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Howard Chang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howard的學習之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/25/Spark與Flume之環境建置/" itemprop="url">Spark與Flume之環境建置</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-25T21:19:32+08:00">
+                2017-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Spark與Flume之環境建置"><a href="#Spark與Flume之環境建置" class="headerlink" title="Spark與Flume之環境建置"></a>Spark與Flume之環境建置</h1><p>這篇教學會說明如何透過Flume來蒐集某一檔案的變化<br>將檔案變動的部分傳給Spark進行即時性的WordCount運算</p>
+<h2 id="什麼是Flume？"><a href="#什麼是Flume？" class="headerlink" title="什麼是Flume？"></a>什麼是Flume？</h2><p>Flume是一個從可以收集例如日誌，事件等數據資源，並將這些數量龐大的數據從各項數據資源中集中起來存儲的工具與服務，或者數集中機制。</p>
+<h2 id="環境布建"><a href="#環境布建" class="headerlink" title="環境布建"></a>環境布建</h2><p>Spark環境可參考我之前的文章來安裝</p>
+<h4 id="Flume安裝"><a href="#Flume安裝" class="headerlink" title="Flume安裝"></a>Flume安裝</h4><p>下載可以到 <a href="http://flume.apache.org/download.html" target="_blank" rel="noopener">http://flume.apache.org/download.html</a></p>
+<p>這邊我使用<code>apache-flume-1.7.0</code>來進行安裝</p>
+<p>一樣安裝到<code>HOME</code>目錄下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~</span><br><span class="line">$ wget http://apache.stu.edu.tw/flume/1.7.0/apache-flume-1.7.0-bin.tar.gz</span><br><span class="line">$ tar zxvf apache-flume-1.7.0-bin.tar.gz</span><br></pre></td></tr></table></figure>
+<p>環境變數的部分使用<code>vim ~/.bashrc</code>來加入Flume的環境變數</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export FLUME_HOME=~/apache-flume-1.7.0-bin</span><br><span class="line">export PATH=$PATH:$FLUME_HOME/bin</span><br></pre></td></tr></table></figure>
+<p>使用下面指令來生效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ source ~/.bashrc</span><br></pre></td></tr></table></figure>
+<p>輸入下面指令看看是否成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ flume-ng version</span><br></pre></td></tr></table></figure>
+<p><img src="/2017/12/25/Spark與Flume之環境建置/FlumeInstall.png" alt=""></p>
+<h4 id="Flume-Assembly"><a href="#Flume-Assembly" class="headerlink" title="Flume Assembly"></a>Flume Assembly</h4><p>要藉由Flume把檔案變動的資料傳給Spark需要<code>Spark Project External Flume Assembly</code>的jar</p>
+<p>所以可以到 <a href="http://mvnrepository.com/artifact/org.apache.spark/spark-streaming-flume-assembly_2.10" target="_blank" rel="noopener">http://mvnrepository.com/artifact/org.apache.spark/spark-streaming-flume-assembly_2.10</a></p>
+<p>這邊我選擇<code>2.1.0</code>並且下載到Spark目錄裡的<code>/jars</code>裡</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/spark-2.1.0-bin-hadoop2.7/jars</span><br><span class="line">$ wget http://central.maven.org/maven2/org/apache/spark/spark-streaming-flume-assembly_2.10/2.1.0/spark-streaming-flume-assembly_2.10-2.1.0.jar</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>~/spark-2.1.0-bin-hadoop2.7/jars這是我的目錄，請依自己的目錄為準</p>
+</blockquote>
+<h4 id="Flume-Configure"><a href="#Flume-Configure" class="headerlink" title="Flume Configure"></a>Flume Configure</h4><p>這邊主要是Flume要偵測哪一檔案的變化、及與Spark溝通port的相關設定</p>
+<p>到剛剛下載並解壓縮完的Flume目錄下的<code>/conf</code></p>
+<p>使用<code>vim wordcount.conf</code>新增一個檔案並加入下面設定</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">a1.channels = c1</span><br><span class="line">a1.sinks = k1</span><br><span class="line">a1.sources = r1</span><br><span class="line"></span><br><span class="line">a1.sinks.k1.type = avro</span><br><span class="line">a1.sinks.k1.channel = c1</span><br><span class="line">a1.sinks.k1.hostname = localhost</span><br><span class="line">a1.sinks.k1.port = 29999</span><br><span class="line"></span><br><span class="line">a1.sources.r1.type = exec</span><br><span class="line">a1.sources.r1.command = tail -F /home/spark/test.txt</span><br><span class="line">a1.sources.r1.channels = c1</span><br><span class="line"></span><br><span class="line">a1.channels.c1.type = memory</span><br><span class="line">a1.channels.c1.capacity = 1000</span><br><span class="line">a1.channels.c1.transactionCapacity = 100</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>/home/spark/test.txt 這是我要偵測的檔案，請依照自己的檔案為準<br>a1.sinks.k1.port = 29999 則是等等要與Spark建立起溝通用的port</p>
+</blockquote>
+<h2 id="執行"><a href="#執行" class="headerlink" title="執行"></a>執行</h2><h4 id="Spark"><a href="#Spark" class="headerlink" title="Spark"></a>Spark</h4><p>這邊使用Spakr本身就用python寫好的WordCount程式<br>到Spark目錄下使用下面指令來執行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ bin/spark-submit --jars jars/spark-streaming-flume-assembly_2.10-2.1.0.jar examples/src/main/python/streaming/flume_wordcount.py localhost 29999</span><br></pre></td></tr></table></figure>
+<h4 id="Flume"><a href="#Flume" class="headerlink" title="Flume"></a>Flume</h4><p>到Flume目錄下使用下面指令來執行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ bin/flume-ng agent --conf conf --conf-file ~/apache-flume-1.7.0-bin/conf/wordcount.conf --name a1 -Dflume.root.logger=INFO,console</span><br></pre></td></tr></table></figure>
+<h4 id="更改檔案"><a href="#更改檔案" class="headerlink" title="更改檔案"></a>更改檔案</h4><p>Spark與Flume都執行起來後，就會看到Spark每1秒接收一次資料<br>我們對要偵測的檔案寫入一些字進去，看看Spark是否有接收到並執行WordCount</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ echo &apos;a b b c c c&apos; &gt;&gt; /home/spark/test.txt</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>/home/spark/test.txt 這是我要偵測的檔案，請依照自己的檔案為準</p>
+</blockquote>
+<p><img src="/2017/12/25/Spark與Flume之環境建置/SparkReceivedData.png" alt=""></p>
+<blockquote>
+<p>這邊要注意的一點是需先執行Spark，接著再執行Flume</p>
+</blockquote>
+<h2 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h2><p><a href="https://kknews.cc/zh-tw/tech/nxn2ng.html" target="_blank" rel="noopener">https://kknews.cc/zh-tw/tech/nxn2ng.html</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/25/Standalone-Mode的佈建-二/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -809,7 +970,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-count">4</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
