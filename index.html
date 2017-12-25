@@ -270,6 +270,176 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/25/Standalone-Mode的佈建-一/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Howard Chang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howard的學習之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/25/Standalone-Mode的佈建-一/" itemprop="url">Standalone Mode的佈建 一</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-25T20:57:33+08:00">
+                2017-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Standalone-Mode的佈建-一"><a href="#Standalone-Mode的佈建-一" class="headerlink" title="Standalone Mode的佈建 一"></a>Standalone Mode的佈建 一</h1><h2 id="Cluster群集介紹"><a href="#Cluster群集介紹" class="headerlink" title="Cluster群集介紹"></a>Cluster群集介紹</h2><p><img src="http://spark.apache.org/docs/latest/img/cluster-overview.png" alt=""></p>
+<p>Spark可以建立群集來跨資源分配，基本上有三種模式可以選擇：</p>
+<ul>
+<li><strong>Standalone</strong></li>
+<li>Apache Mesos</li>
+<li>Hadoop YARN</li>
+</ul>
+<p>這邊以Standalone來介紹如何建立環境</p>
+<h2 id="環境介紹"><a href="#環境介紹" class="headerlink" title="環境介紹"></a>環境介紹</h2><p>這邊有三台電腦分別為：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">Hostname</th>
+<th style="text-align:center">IP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">Master</td>
+<td style="text-align:center">192.168.2.101</td>
+</tr>
+<tr>
+<td style="text-align:center">Slave1</td>
+<td style="text-align:center">192.168.2.102</td>
+</tr>
+<tr>
+<td style="text-align:center">Slave2</td>
+<td style="text-align:center">192.168.2.103</td>
+</tr>
+</tbody>
+</table>
+<h2 id="環境設定"><a href="#環境設定" class="headerlink" title="環境設定"></a>環境設定</h2><h4 id="Master設定"><a href="#Master設定" class="headerlink" title="Master設定"></a>Master設定</h4><p>到Spark目錄下的<code>/sbin</code>執行下面指令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./start-master.sh --host [Master_IP]</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>以我的例子，Master_IP就是192.168.2.101</p>
+</blockquote>
+<p>執行完後，Master的位置會在192.168.2.101:7077(預設port)<br>在瀏覽器輸入Master_IP:8080，就會看到下面畫面</p>
+<p><img src="/2017/12/25/Standalone-Mode的佈建-一/SparkGUI.PNG" alt=""></p>
+<h4 id="Slave設定"><a href="#Slave設定" class="headerlink" title="Slave設定"></a>Slave設定</h4><p>分別在每個Slave上建立起Worker Node<br>所以到各個Slave輸入下列指令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./start-slave.sh spark://[Master_IP]:7077</span><br></pre></td></tr></table></figure>
+<p>將Slave1、Slave2都加進來後會看到下面畫面</p>
+<p><img src="/2017/12/25/Standalone-Mode的佈建-一/MasterAndWorkersGUI.PNG" alt=""></p>
+<h2 id="執行Application"><a href="#執行Application" class="headerlink" title="執行Application"></a>執行Application</h2><h4 id="Spark-Shell"><a href="#Spark-Shell" class="headerlink" title="Spark-Shell"></a>Spark-Shell</h4><p>一樣到Spark目錄下的<code>/bin</code>執行之前所使用的Spark-Shell<br>但比較不一樣的，這次要指定Master</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ spark-shell --master spark://[Master_IP]:7077</span><br></pre></td></tr></table></figure>
+<p><img src="/2017/12/25/Standalone-Mode的佈建-一/Spark-ShellWithMaster.png" alt=""></p>
+<h4 id="PI迭代計算"><a href="#PI迭代計算" class="headerlink" title="PI迭代計算"></a>PI迭代計算</h4><p>這邊我們實際玩個例子<br>可以來跑一下官方自帶的Example Code<br>以python所寫的迭代計算PI<br>到Spark目錄下的<code>/examples/src/main/python</code><br>執行下面指令，來迭代10次算出PI</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ spark-submit --master spark://[Master_IP]:7077 pi.py 10</span><br></pre></td></tr></table></figure>
+<p><img src="/2017/12/25/Standalone-Mode的佈建-一/CalcPI.png" alt=""></p>
+<h2 id="結束Standlaone-Mode"><a href="#結束Standlaone-Mode" class="headerlink" title="結束Standlaone Mode"></a>結束Standlaone Mode</h2><p>到Spark目錄下的<code>/sbin</code>執行下面指令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./stop-all.sh</span><br></pre></td></tr></table></figure>
+<h2 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h2><p><a href="http://spark.apache.org/docs/latest/spark-standalone.html" target="_blank" rel="noopener">http://spark.apache.org/docs/latest/spark-standalone.html</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/25/Spark環境快速安裝/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -457,7 +627,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-count">2</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
