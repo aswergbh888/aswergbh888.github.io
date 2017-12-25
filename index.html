@@ -270,6 +270,172 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/25/FB-Messenger-Bot-建置教學/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Howard Chang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howard的學習之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/12/25/FB-Messenger-Bot-建置教學/" itemprop="url">FB Messenger Bot 建置教學</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-25T22:08:29+08:00">
+                2017-12-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="FB-Messenger-Bot-建置教學"><a href="#FB-Messenger-Bot-建置教學" class="headerlink" title="FB Messenger Bot 建置教學"></a>FB Messenger Bot 建置教學</h1><p>此教學為建置一個FB粉絲團自動回化的機器人之環境</p>
+<h2 id="Facebook-Developer的APP建立"><a href="#Facebook-Developer的APP建立" class="headerlink" title="Facebook Developer的APP建立"></a>Facebook Developer的APP建立</h2><p>既然是要寫這項功能自然就是要開啟FB開發者的功能<br>到<a href="https://developers.facebook.com/" target="_blank" rel="noopener">https://developers.facebook.com/</a></p>
+<p>點擊右上角的 <strong>「我的應用程式」</strong> -&gt; <strong>「新增應用程式」</strong></p>
+<p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/1.png" alt=""></p>
+<p>輸入名稱及選擇類別後就可以建立應用程式了<br>並在Messenger選項點選 <strong>「開始使用」</strong></p>
+<p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/2.png" alt=""></p>
+<h2 id="建立粉絲專頁存取權杖"><a href="#建立粉絲專頁存取權杖" class="headerlink" title="建立粉絲專頁存取權杖"></a>建立粉絲專頁存取權杖</h2><p>選擇粉絲團及產生一組權杖 <strong>(pageAccessToken)</strong></p>
+<p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/3.png" alt=""></p>
+<h2 id="查看應用程式密鑰"><a href="#查看應用程式密鑰" class="headerlink" title="查看應用程式密鑰"></a>查看應用程式密鑰</h2><p>點選左上角的主控版查看應用程式密鑰 <strong>(appSecret)</strong></p>
+<p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/4.png" alt=""></p>
+<p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/5.png" alt=""></p>
+<h2 id="建立HTTP-Server"><a href="#建立HTTP-Server" class="headerlink" title="建立HTTP Server"></a>建立HTTP Server</h2><p>這邊使用免費的虛擬主機 <a href="https://c9.io/" target="_blank" rel="noopener">https://c9.io/</a><br>辦完帳號就能建立一個新的workspaces<br>輸入name，且一定要選 <strong>Public</strong> 的權限<br>Git clone的URL輸入 <a href="https://github.com/fbsamples/messenger-platform-samples.git" target="_blank" rel="noopener">https://github.com/fbsamples/messenger-platform-samples.git</a><br>最後template選擇 <strong>Node.js</strong></p>
+<p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/6.png" alt=""></p>
+<p>建立完成後在下方Terminal依序輸入下列指令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd node/</span><br><span class="line">$ npm install</span><br></pre></td></tr></table></figure>
+<p>成功時會看到產生了 <strong>node_modules</strong> 資料夾<br>這時開啟 <strong>node/config/default.json</strong> 這個檔案</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;appSecret&quot;: &quot;&quot;,</span><br><span class="line">    &quot;pageAccessToken&quot;: &quot;&quot;,</span><br><span class="line">    &quot;validationToken&quot;: &quot;&quot;,</span><br><span class="line">    &quot;serverURL&quot;: &quot;&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>appSecret: 這邊填入應用程式密鑰</li>
+<li>pageAccessToken: 粉絲專頁存取權杖</li>
+<li>validationToken: 自己可以任意輸入，但要需要記住，等等下面會用到</li>
+<li>serverURL: 輸入<a href="https://**專案名稱**–**帳號名稱**.c9users.io" target="_blank" rel="noopener">https://**專案名稱**–**帳號名稱**.c9users.io</a></li>
+</ul>
+<p>完成後存檔並在下面Terminal輸入下列指令來啟動Server</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ node app.js</span><br></pre></td></tr></table></figure>
+<p>成功時會看到 <strong>「Node app is running on port 8080」</strong></p>
+<h2 id="設定Webhooks"><a href="#設定Webhooks" class="headerlink" title="設定Webhooks"></a>設定Webhooks</h2><p>回到FB Developer的頁面，點擊右邊的 <strong>「設定Webhooks」</strong></p>
+<p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/7.png" alt=""></p>
+<p>在回呼網址輸入<a href="https://**專案名稱**–**帳號名稱**.c9users.io/webhook" target="_blank" rel="noopener">https://**專案名稱**–**帳號名稱**.c9users.io/webhook</a><br>驗證權杖這邊輸入上面json裡 <strong>validationToken</strong> 的值<br>下面的訂閱欄位依自己需求勾選</p>
+<p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/8.png" alt=""></p>
+<p>儲存完後就可以選訂閱的粉絲團</p>
+<p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/9.png" alt=""></p>
+<h2 id="測試Bot"><a href="#測試Bot" class="headerlink" title="測試Bot"></a>測試Bot</h2><p>到粉絲團頁面，選擇「更多」 -&gt; 「以粉絲專頁訪客的身分檢視」<br>就可以傳送訊息給粉絲團了</p>
+<p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/10.png" alt=""></p>
+<p>看到Bot成功回你輸入的訊息就代表成功囉</p>
+<p><img src="/2017/12/25/FB-Messenger-Bot-建置教學/11.png" alt=""></p>
+<h2 id="客制化回話"><a href="#客制化回話" class="headerlink" title="客制化回話"></a>客制化回話</h2><p>主要修改app.js這檔案</p>
+<ul>
+<li>收到訊息的事件在 function receivedMessage(event)</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Message Event</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * This event is called when a message is sent to your page. The 'message' </span></span><br><span class="line"><span class="comment"> * object format can vary depending on the kind of message that was received.</span></span><br><span class="line"><span class="comment"> * Read more at https://developers.facebook.com/docs/messenger-platform/webhook-reference/message-received</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * For this example, we're going to echo any text that we get. If we get some </span></span><br><span class="line"><span class="comment"> * special keywords ('button', 'generic', 'receipt'), then we'll send back</span></span><br><span class="line"><span class="comment"> * examples of those bubbles to illustrate the special message bubbles we've </span></span><br><span class="line"><span class="comment"> * created. If we receive a message with an attachment (image, video, audio), </span></span><br><span class="line"><span class="comment"> * then we'll simply confirm that we've received the attachment.</span></span><br><span class="line"><span class="comment"> * </span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">receivedMessage</span>(<span class="params">event</span>) </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>傳送訊息的方法在 function sendTextMessage(recipientId, messageText)</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Send a text message using the Send API.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">sendTextMessage</span>(<span class="params">recipientId, messageText</span>) </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>基本上只要用這兩個Function就能客制化自己的機器人囉~</p>
+<h2 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h2><p><a href="http://animabeautifullife.blogspot.tw/2016/06/facebook-messenger-api.html" target="_blank" rel="noopener">http://animabeautifullife.blogspot.tw/2016/06/facebook-messenger-api.html</a></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/25/緩衝區溢位原理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1139,7 +1305,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-count">6</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -1152,7 +1318,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-count">3</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
