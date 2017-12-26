@@ -94,18 +94,18 @@
 
 
 
-<meta name="description" content="Hyperas - 在Keras中自動選擇超參數這邊將介紹透過簡單範例透過Hyperas選擇符合我們Model的最好超參數 安裝Hyperas使用pip進行安裝 1$ pip install hyperas Import Hyperas123from hyperopt import Trials, STATUS_OK, tpefrom hyperas import optimfrom hypera">
+<meta name="description" content="Hyperas - 在Keras中自動選擇超參數將介紹簡單範例，透過Hyperas選擇符合Model的最好超參數 安裝Hyperas使用pip進行安裝 1$ pip install hyperas Import Hyperas123from hyperopt import Trials, STATUS_OK, tpefrom hyperas import optimfrom hyperas.dis">
 <meta name="keywords" content="keras">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hyperas - 在Keras中自動選擇超參數">
 <meta property="og:url" content="http://yoursite.com/2017/12/26/Hyperas-在Keras中自動選擇超參數/index.html">
 <meta property="og:site_name" content="Howard的學習之路">
-<meta property="og:description" content="Hyperas - 在Keras中自動選擇超參數這邊將介紹透過簡單範例透過Hyperas選擇符合我們Model的最好超參數 安裝Hyperas使用pip進行安裝 1$ pip install hyperas Import Hyperas123from hyperopt import Trials, STATUS_OK, tpefrom hyperas import optimfrom hypera">
+<meta property="og:description" content="Hyperas - 在Keras中自動選擇超參數將介紹簡單範例，透過Hyperas選擇符合Model的最好超參數 安裝Hyperas使用pip進行安裝 1$ pip install hyperas Import Hyperas123from hyperopt import Trials, STATUS_OK, tpefrom hyperas import optimfrom hyperas.dis">
 <meta property="og:locale" content="en">
-<meta property="og:updated_time" content="2017-12-26T07:50:42.259Z">
+<meta property="og:updated_time" content="2017-12-26T11:41:58.597Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hyperas - 在Keras中自動選擇超參數">
-<meta name="twitter:description" content="Hyperas - 在Keras中自動選擇超參數這邊將介紹透過簡單範例透過Hyperas選擇符合我們Model的最好超參數 安裝Hyperas使用pip進行安裝 1$ pip install hyperas Import Hyperas123from hyperopt import Trials, STATUS_OK, tpefrom hyperas import optimfrom hypera">
+<meta name="twitter:description" content="Hyperas - 在Keras中自動選擇超參數將介紹簡單範例，透過Hyperas選擇符合Model的最好超參數 安裝Hyperas使用pip進行安裝 1$ pip install hyperas Import Hyperas123from hyperopt import Trials, STATUS_OK, tpefrom hyperas import optimfrom hyperas.dis">
 
 
 
@@ -360,7 +360,7 @@
       
 
       
-        <h1 id="Hyperas-在Keras中自動選擇超參數"><a href="#Hyperas-在Keras中自動選擇超參數" class="headerlink" title="Hyperas - 在Keras中自動選擇超參數"></a>Hyperas - 在Keras中自動選擇超參數</h1><p>這邊將介紹透過簡單範例<br>透過Hyperas選擇符合我們Model的最好超參數</p>
+        <h1 id="Hyperas-在Keras中自動選擇超參數"><a href="#Hyperas-在Keras中自動選擇超參數" class="headerlink" title="Hyperas - 在Keras中自動選擇超參數"></a>Hyperas - 在Keras中自動選擇超參數</h1><p>將介紹簡單範例，透過Hyperas選擇符合Model的最好超參數</p>
 <h2 id="安裝Hyperas"><a href="#安裝Hyperas" class="headerlink" title="安裝Hyperas"></a>安裝Hyperas</h2><p>使用<code>pip</code>進行安裝</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pip install hyperas</span><br></pre></td></tr></table></figure>
 <h2 id="Import-Hyperas"><a href="#Import-Hyperas" class="headerlink" title="Import Hyperas"></a>Import Hyperas</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> hyperopt <span class="keyword">import</span> Trials, STATUS_OK, tpe</span><br><span class="line"><span class="keyword">from</span> hyperas <span class="keyword">import</span> optim</span><br><span class="line"><span class="keyword">from</span> hyperas.distributions <span class="keyword">import</span> choice, uniform</span><br></pre></td></tr></table></figure>
@@ -371,9 +371,9 @@
 <li>定義Model</li>
 <li>Optimize model hyperparameters</li>
 </ol>
-<h2 id="定義Data"><a href="#定義Data" class="headerlink" title="定義Data"></a>定義Data</h2><p>使用<code>MNIST</code>的Data</p>
+<h2 id="定義Data"><a href="#定義Data" class="headerlink" title="定義Data"></a>定義Data</h2><p>使用<code>MNIST</code>的data</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">data</span><span class="params">()</span>:</span></span><br><span class="line">    (X_train, y_train), (X_test, y_test) = mnist.load_data()</span><br><span class="line">    X_train = X_train.reshape(<span class="number">60000</span>, <span class="number">784</span>)</span><br><span class="line">    X_test = X_test.reshape(<span class="number">10000</span>, <span class="number">784</span>)</span><br><span class="line">    X_train = X_train.astype(<span class="string">'float32'</span>)</span><br><span class="line">    X_test = X_test.astype(<span class="string">'float32'</span>)</span><br><span class="line">    X_train /= <span class="number">255</span></span><br><span class="line">    X_test /= <span class="number">255</span></span><br><span class="line">    nb_classes = <span class="number">10</span></span><br><span class="line">    Y_train = np_utils.to_categorical(y_train, nb_classes)</span><br><span class="line">    Y_test = np_utils.to_categorical(y_test, nb_classes)</span><br><span class="line">    <span class="keyword">return</span> X_train, Y_train, X_test, Y_test</span><br></pre></td></tr></table></figure>
-<h2 id="定義Model"><a href="#定義Model" class="headerlink" title="定義Model"></a>定義Model</h2><p>這邊除了定義Modle外，還需完成training及testing，所以需把data傳進來<br>最後回傳一個dictionary，其中包含：</p>
+<h2 id="定義Model"><a href="#定義Model" class="headerlink" title="定義Model"></a>定義Model</h2><p>這邊除了定義Model外，還需完成training及testing，所以需把data傳進來<br>最後回傳一個dictionary，其中包含：</p>
 <ul>
 <li>loss: Hyperas會去選擇最小值的model</li>
 <li>status: 直接回傳<code>STATUS_OK</code></li>
@@ -396,7 +396,7 @@
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">X_train, Y_train, X_test, Y_test = data()</span><br><span class="line"></span><br><span class="line">best_run, best_model = optim.minimize(model=create_model,</span><br><span class="line">                                      data=data,</span><br><span class="line">                                      algo=tpe.suggest,</span><br><span class="line">                                      max_evals=<span class="number">5</span>,</span><br><span class="line">                                      trials=Trials())</span><br><span class="line"></span><br><span class="line">print(<span class="string">"Evalutation of best performing model:"</span>)</span><br><span class="line">print(best_model.evaluate(X_test, Y_test))</span><br></pre></td></tr></table></figure>
 <h2 id="最後"><a href="#最後" class="headerlink" title="最後"></a>最後</h2><ol>
 <li>Hyperas好像跟註解很不合，在跑程式時需把註解都刪掉，以免發生錯誤</li>
-<li>如果是使用jupyter notebook需在<code>optim.minimize()</code>多加入<code>notebook_name</code>這個參數且設定為<code>ipynb</code>的檔名，假如目前為Untitled.ipynb就虛設定為：</li>
+<li>如果是使用jupyter notebook需在<code>optim.minimize()</code>多加入<code>notebook_name</code>這個參數且設定為<code>ipynb</code>的檔名，假如目前為<code>Untitled.ipynb</code>就設定為：</li>
 </ol>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">best_run, best_model = optim.minimize(model=create_model,</span><br><span class="line">                                      data=data,</span><br><span class="line">                                      algo=tpe.suggest,</span><br><span class="line">                                      max_evals=<span class="number">5</span>,</span><br><span class="line">                                      trials=Trials(),</span><br><span class="line">                                      notebook_name=<span class="string">'Untitled'</span>)</span><br></pre></td></tr></table></figure>
 <h2 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h2><p><a href="https://github.com/maxpumperla/hyperas" target="_blank" rel="noopener">https://github.com/maxpumperla/hyperas</a></p>
