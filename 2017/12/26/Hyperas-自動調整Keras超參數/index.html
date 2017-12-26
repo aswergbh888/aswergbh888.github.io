@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="keras," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.png?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="Hyperas - 自動調整Keras超參數這邊將介紹透過簡單的程式透過Hyperas選擇符合我們定義Model的最好參數 安裝Hyperas使用pip進行安裝 1$ pip install hyperas Import Hyperas123from hyperopt import Trials, STATUS_OK, tpefrom hyperas import optimfrom hypera">
+<meta name="keywords" content="keras">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hyperas - 自動調整Keras超參數">
+<meta property="og:url" content="http://yoursite.com/2017/12/26/Hyperas-自動調整Keras超參數/index.html">
+<meta property="og:site_name" content="Howard的學習之路">
+<meta property="og:description" content="Hyperas - 自動調整Keras超參數這邊將介紹透過簡單的程式透過Hyperas選擇符合我們定義Model的最好參數 安裝Hyperas使用pip進行安裝 1$ pip install hyperas Import Hyperas123from hyperopt import Trials, STATUS_OK, tpefrom hyperas import optimfrom hypera">
+<meta property="og:locale" content="en">
+<meta property="og:updated_time" content="2017-12-26T07:35:36.581Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Hyperas - 自動調整Keras超參數">
+<meta name="twitter:description" content="Hyperas - 自動調整Keras超參數這邊將介紹透過簡單的程式透過Hyperas選擇符合我們定義Model的最好參數 安裝Hyperas使用pip進行安裝 1$ pip install hyperas Import Hyperas123from hyperopt import Trials, STATUS_OK, tpefrom hyperas import optimfrom hypera">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/26/Hyperas-自動調整Keras超參數/"/>
+
+
+
+
+
+  <title>Hyperas - 自動調整Keras超參數 | Howard的學習之路</title>
+  
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-111619338-1', 'auto');
+  ga('send', 'pageview');
+</script>
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="en">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Howard的學習之路</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/26/Hyperas-自動調整Keras超參數/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Howard Chang">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Howard的學習之路">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Hyperas - 自動調整Keras超參數</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-26T15:35:05+08:00">
+                2017-12-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Hyperas-自動調整Keras超參數"><a href="#Hyperas-自動調整Keras超參數" class="headerlink" title="Hyperas - 自動調整Keras超參數"></a>Hyperas - 自動調整Keras超參數</h1><p>這邊將介紹透過簡單的程式<br>透過Hyperas選擇符合我們定義Model的最好參數</p>
+<h2 id="安裝Hyperas"><a href="#安裝Hyperas" class="headerlink" title="安裝Hyperas"></a>安裝Hyperas</h2><p>使用<code>pip</code>進行安裝</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ pip install hyperas</span><br></pre></td></tr></table></figure>
+<h2 id="Import-Hyperas"><a href="#Import-Hyperas" class="headerlink" title="Import Hyperas"></a>Import Hyperas</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> hyperopt <span class="keyword">import</span> Trials, STATUS_OK, tpe</span><br><span class="line"><span class="keyword">from</span> hyperas <span class="keyword">import</span> optim</span><br><span class="line"><span class="keyword">from</span> hyperas.distributions <span class="keyword">import</span> choice, uniform</span><br></pre></td></tr></table></figure>
+<h2 id="Import-Keras"><a href="#Import-Keras" class="headerlink" title="Import Keras"></a>Import Keras</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential</span><br><span class="line"><span class="keyword">from</span> keras.layers.core <span class="keyword">import</span> Dense, Dropout, Activation</span><br><span class="line"><span class="keyword">from</span> keras.optimizers <span class="keyword">import</span> RMSprop</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> keras.datasets <span class="keyword">import</span> mnist</span><br><span class="line"><span class="keyword">from</span> keras.utils <span class="keyword">import</span> np_utils</span><br></pre></td></tr></table></figure>
+<p>之後我們會依序</p>
+<ol>
+<li>定義Data</li>
+<li>定義Model</li>
+<li>Optimize model hyperparameters</li>
+</ol>
+<h2 id="定義Data"><a href="#定義Data" class="headerlink" title="定義Data"></a>定義Data</h2><p>使用<code>MNIST</code>的Data</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">data</span><span class="params">()</span>:</span></span><br><span class="line">    (X_train, y_train), (X_test, y_test) = mnist.load_data()</span><br><span class="line">    X_train = X_train.reshape(<span class="number">60000</span>, <span class="number">784</span>)</span><br><span class="line">    X_test = X_test.reshape(<span class="number">10000</span>, <span class="number">784</span>)</span><br><span class="line">    X_train = X_train.astype(<span class="string">'float32'</span>)</span><br><span class="line">    X_test = X_test.astype(<span class="string">'float32'</span>)</span><br><span class="line">    X_train /= <span class="number">255</span></span><br><span class="line">    X_test /= <span class="number">255</span></span><br><span class="line">    nb_classes = <span class="number">10</span></span><br><span class="line">    Y_train = np_utils.to_categorical(y_train, nb_classes)</span><br><span class="line">    Y_test = np_utils.to_categorical(y_test, nb_classes)</span><br><span class="line">    <span class="keyword">return</span> X_train, Y_train, X_test, Y_test</span><br></pre></td></tr></table></figure>
+<h2 id="定義Model"><a href="#定義Model" class="headerlink" title="定義Model"></a>定義Model</h2><p>這邊除了定義Modle外，還需完成training及testing，所以需把data傳進來<br>最後回傳一個dictionary，其中包含：</p>
+<ul>
+<li>loss: 目標最小化</li>
+<li>status: 直接回傳<code>STATUS_OK</code></li>
+<li>model: 可不回傳</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">create_model</span><span class="params">(X_train, Y_train, X_test, Y_test)</span>:</span></span><br><span class="line">    model = Sequential()</span><br><span class="line">    model.add(Dense(<span class="number">512</span>, input_shape=(<span class="number">784</span>,)))</span><br><span class="line">    model.add(Activation(<span class="string">'relu'</span>))</span><br><span class="line">    model.add(Dropout(&#123;&#123;uniform(<span class="number">0</span>, <span class="number">1</span>)&#125;&#125;))</span><br><span class="line">    model.add(Dense(&#123;&#123;choice([<span class="number">256</span>, <span class="number">512</span>, <span class="number">1024</span>])&#125;&#125;))</span><br><span class="line">    model.add(Activation(<span class="string">'relu'</span>))</span><br><span class="line">    model.add(Dropout(&#123;&#123;uniform(<span class="number">0</span>, <span class="number">1</span>)&#125;&#125;))</span><br><span class="line">    model.add(Dense(<span class="number">10</span>))</span><br><span class="line">    model.add(Activation(<span class="string">'softmax'</span>))</span><br><span class="line"></span><br><span class="line">    rms = RMSprop()</span><br><span class="line">    model.compile(loss=<span class="string">'categorical_crossentropy'</span>, optimizer=rms, metrics=[<span class="string">'accuracy'</span>])</span><br><span class="line">    </span><br><span class="line">    model.fit(X_train, Y_train,</span><br><span class="line">              batch_size=&#123;&#123;choice([<span class="number">64</span>, <span class="number">128</span>])&#125;&#125;,</span><br><span class="line">              nb_epoch=<span class="number">1</span>,</span><br><span class="line">              verbose=<span class="number">2</span>,</span><br><span class="line">              validation_data=(X_test, Y_test))</span><br><span class="line">    score, acc = model.evaluate(X_test, Y_test, verbose=<span class="number">0</span>)</span><br><span class="line">    print(<span class="string">'Test accuracy:'</span>, acc)</span><br><span class="line">    <span class="keyword">return</span> &#123;<span class="string">'loss'</span>: -acc, <span class="string">'status'</span>: STATUS_OK, <span class="string">'model'</span>: model&#125;</span><br></pre></td></tr></table></figure>
+<p>原本Dropout需要傳入一個0~1的機率<br>但我們這邊不直接指定一個數字<br>而是透過<code>uniform</code>幫我們產生一個0~1的數字</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model.add(Dropout(&#123;&#123;uniform(<span class="number">0</span>, <span class="number">1</span>)&#125;&#125;))</span><br></pre></td></tr></table></figure>
+<p>Dense擇是透過<code>choice</code><br>我們能放入幾個我們要哪些值</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">model.add(Dense(&#123;&#123;choice([<span class="number">256</span>, <span class="number">512</span>, <span class="number">1024</span>])&#125;&#125;))</span><br></pre></td></tr></table></figure>
+<p>最後回傳的dictionary<br>我們目標是選擇最高的accuracy的model<br>但因為Huperas他會去選擇<code>loss</code>這個value <strong>最小的</strong> 的model<br>所以將accuracy直接變 <strong>負號</strong><br>然後丟給<code>loss</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> &#123;<span class="string">'loss'</span>: -acc, <span class="string">'status'</span>: STATUS_OK, <span class="string">'model'</span>: model&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Optimize-model-hyperparameters"><a href="#Optimize-model-hyperparameters" class="headerlink" title="Optimize model hyperparameters"></a>Optimize model hyperparameters</h2><p>最後透過<code>optim.minimize()</code>來找出最好的model</p>
+<ul>
+<li>model: 我們定義的model</li>
+<li>data: 我們定義的data</li>
+<li>algo: 使用TPE algorithm</li>
+<li>max_evals: evaluation次數</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">X_train, Y_train, X_test, Y_test = data()</span><br><span class="line"></span><br><span class="line">best_run, best_model = optim.minimize(model=create_model,</span><br><span class="line">                                      data=data,</span><br><span class="line">                                      algo=tpe.suggest,</span><br><span class="line">                                      max_evals=<span class="number">5</span>,</span><br><span class="line">                                      trials=Trials())</span><br><span class="line"></span><br><span class="line">print(<span class="string">"Evalutation of best performing model:"</span>)</span><br><span class="line">print(best_model.evaluate(X_test, Y_test))</span><br></pre></td></tr></table></figure>
+<h2 id="最後"><a href="#最後" class="headerlink" title="最後"></a>最後</h2><ol>
+<li>Hyperas好像跟註解有仇一樣，在跑程式時需把註解都刪掉，以免發生錯誤</li>
+<li>如果是使用jupyter notebook需在<code>optim.minimize()</code>多加入<code>notebook_name</code>這個參數且設定為<code>ipynb</code>的檔名，假如目前為Untitled.ipynb就虛設定為：</li>
+</ol>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">best_run, best_model = optim.minimize(model=create_model,</span><br><span class="line">                                      data=data,</span><br><span class="line">                                      algo=tpe.suggest,</span><br><span class="line">                                      max_evals=<span class="number">5</span>,</span><br><span class="line">                                      trials=Trials(),</span><br><span class="line">                                      notebook_name=<span class="string">'Untitled'</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="參考"><a href="#參考" class="headerlink" title="參考"></a>參考</h2><p><a href="https://github.com/maxpumperla/hyperas" target="_blank" rel="noopener">https://github.com/maxpumperla/hyperas</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/keras/" rel="tag"># keras</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/12/25/FB-Messenger-Bot-建置教學/" rel="next" title="FB Messenger Bot 建置教學">
+                <i class="fa fa-chevron-left"></i> FB Messenger Bot 建置教學
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/avatar.jpg"
+               alt="Howard Chang" />
+          <p class="site-author-name" itemprop="name">Howard Chang</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/aswergbh888" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Hyperas-自動調整Keras超參數"><span class="nav-number">1.</span> <span class="nav-text">Hyperas - 自動調整Keras超參數</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#安裝Hyperas"><span class="nav-number">1.1.</span> <span class="nav-text">安裝Hyperas</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Import-Hyperas"><span class="nav-number">1.2.</span> <span class="nav-text">Import Hyperas</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Import-Keras"><span class="nav-number">1.3.</span> <span class="nav-text">Import Keras</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定義Data"><span class="nav-number">1.4.</span> <span class="nav-text">定義Data</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#定義Model"><span class="nav-number">1.5.</span> <span class="nav-text">定義Model</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Optimize-model-hyperparameters"><span class="nav-number">1.6.</span> <span class="nav-text">Optimize model hyperparameters</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最後"><span class="nav-number">1.7.</span> <span class="nav-text">最後</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#參考"><span class="nav-number">1.8.</span> <span class="nav-text">參考</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Howard Chang</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
